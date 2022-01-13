@@ -85,6 +85,16 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@quasar/extras@^1.12.3":
+  version "1.12.3"
+  resolved "https://registry.yarnpkg.com/@quasar/extras/-/extras-1.12.3.tgz#a8727c9e97ebe44fb4c9ed437cab1446ee6a8c30"
+  integrity sha512-BIWpysRnHqbroPnCtWQPNUdhLo97p45RC7J+SVgJH3hdsCHkwJTBMAwaw1522SJn+nEkrPKq1YLm0MgAYmPvvw==
+
+"@quasar/vite-plugin@^1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@quasar/vite-plugin/-/vite-plugin-1.0.4.tgz#7a9e6869f59c25830b66d3e4f04e8ab4706aa41a"
+  integrity sha512-rH3QKL1p1bvAki62m2Jovh4I84iQifcPSMverzvMxjzKAqRhaxcDqBwJLC5WxnzJ8DWy/rAPI7pQAWlImG7Q7Q==
+
 "@types/parse-json@^4.0.0":
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
@@ -368,7 +378,7 @@ chalk@^4.0.0, chalk@^4.1.2:
     ansi-styles "^4.1.0"
     supports-color "^7.1.0"
 
-chokidar@^3.5.2:
+"chokidar@>=2.0.0 <4.0.0", chokidar@^3.5.2:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/chokidar/-/chokidar-3.5.2.tgz#dba3976fcadb016f66fd365021d91600d01c1e75"
   integrity sha512-ekGhOnNVPgT77r4K/U3GDhu+FQ2S8TnK/s2KbIGXi0SZWuwkZ2QNyfWdZW+TVfn84DpEP7rLeCt2UI6bJ8GwbQ==
@@ -1386,6 +1396,11 @@ purgecss@^4.0.3:
     postcss "^8.3.5"
     postcss-selector-parser "^6.0.6"
 
+quasar@^2.4.9:
+  version "2.4.9"
+  resolved "https://registry.yarnpkg.com/quasar/-/quasar-2.4.9.tgz#81b8efdf442474038a7eff2a8735863ddf86b443"
+  integrity sha512-b07pI3mAM3NKv3jFDYLevHTh3CPtkaplA1Afw5S+07rZGNdhA5SItln2yWXZWeGi+DiX+AZxfoCzihz/NFWYZQ==
+
 queue-microtask@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/queue-microtask/-/queue-microtask-1.2.3.tgz#4929228bbc724dfac43e0efb058caf7b6cfb6243"
@@ -1470,6 +1485,13 @@ run-parallel@^1.1.9:
   integrity sha512-5l4VyZR86LZ/lDxZTR6jqL8AFE2S0IFLMP26AbjsLVADxHdhB/c0GUsH+y39UfCi3dzz8OlQuPmnaJOMoDHQBA==
   dependencies:
     queue-microtask "^1.2.2"
+
+sass@1.32.0:
+  version "1.32.0"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.32.0.tgz#10101a026c13080b14e2b374d4e15ee24400a4d3"
+  integrity sha512-fhyqEbMIycQA4blrz/C0pYhv2o4x2y6FYYAH0CshBw3DXh5D5wyERgxw0ptdau1orc/GhNrhF7DFN2etyOCEng==
+  dependencies:
+    chokidar ">=2.0.0 <4.0.0"
 
 semver@^6.3.0:
   version "6.3.0"
