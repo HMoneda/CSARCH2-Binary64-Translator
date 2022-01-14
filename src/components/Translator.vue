@@ -1,6 +1,7 @@
 <template>
   <div id="input-container" class="input-container relative m-auto mt-7">
-    <div class="q-pa-md">
+    <!-- Input button toggles -->
+    <div class="q-pa-md" style="height: 12.5%">
       <div class="q-gutter-y-md">
         <q-btn-toggle
           v-model="state.selected"
@@ -12,137 +13,163 @@
             { label: 'Hexadecimal Input', value: 'hex' },
             { label: 'Binary Input', value: 'bin' },
           ]"
+          :disable="state.translated == true"
         />
       </div>
     </div>
-
-    <div>
+    <!-- Hex form -->
+    <div v-if="state.selected === 'hex'">
       <form
         id="hex-form"
-        v-if="state.selected === 'hex'"
         class="px-4 flex-column justify-center"
       >
-        <h1 class="text-black text-xl lato-regular">
+        <div class="my-28">
+          <h1 class="text-black text-xl lato-regular">
           Enter hexadecimal number
-        </h1>
-        <q-input
-          outlined
-          v-model="state.hex_input"
-          :dense="dense"
-          :maxlength="16"
-          lazy-rules
-          :rules="[
-            (val) =>
-              (val && val.length > 0 && val.length == 16) ||
-              'Please enter a 16-digit hexadecimal number',
-          ]"
-          :error="false"
-          error-message=""
-          style="text-transform: uppercase"
-        />
-        <!-- TODO -->
-        <div class="">
-          <div class="q-gutter-sm absolute bottom-14 mb-1">
+          </h1>
+          <q-input
+            outlined
+            v-model="state.hex_input"
+            :maxlength="16"
+            lazy-rules
+            :rules="[
+              (val) =>
+                val == null || val.length > 0 || val.length == 16 ||
+                'Please enter a 16-digit hexadecimal number',
+                (val) =>
+                val == null || /^[0-9A-F]+$/.test(val) ||
+                'Please enter a valid hexadecimal number',
+            ]"
+            :disable="state.translated == true"
+            :error="false"
+            error-message=""
+            style="text-transform: uppercase"
+          />
+        </div>
+
+        <div style="height: 12.5%" v-if="state.selected === 'hex'">
+          <div class="q-gutter-sm">
             <q-checkbox
               v-model="state.select_fixed"
               label="Show fixed point"
               color="blue"
+              :disable="state.translated == true"
             />
             <q-checkbox
               v-model="state.select_floating"
               label="Show floating point"
               color="blue"
+              :disable="state.translated == true"
             />
           </div>
           <q-btn
-            color="blue"
-            label="Translate!"
-            style="width: 94.5%"
-            class="absolute bottom-4"
-            @click="translateHex"
-          />
+          v-if="state.translated == false"
+          color="blue"
+          label="Translate!"
+          style="width: 100%"
+          :disable="!valid_hex || !(state.select_fixed || state.select_floating)"
+          @click="translateHex"
+        />
+        <q-btn
+          v-if="state.translated == true"
+          color="blue"
+          label="New Translation"
+          style="width: 100%"
+          @click="resetInput"
+        />
           <!-- TODO -->
         </div>
       </form>
     </div>
-
-    <div
+    <!-- Bin Form -->
+    <form
       id="bin-form"
       v-if="state.selected === 'bin'"
       class="px-4 flex-column justify-center"
     >
+    <div class="my-2">
       <h1 class="text-black text-xl lato-regular">Enter sign bit</h1>
       <q-input
         outlined
         v-model="state.signbit"
-        :dense="dense"
         :maxlength="1"
         lazy-rules
         :rules="[
           (val) => val == 0 || val == 1 || 'Sign bit must either be 0 or 1',
         ]"
+        :readonly="state.translated == true"
         error-message=""
       />
-      <!-- TODO -->
       <h1 class="text-black text-xl lato-regular">Enter exponent</h1>
       <q-input
         outlined
         v-model="state.exponent"
-        :dense="dense"
         :maxlength="11"
         lazy-rules
         :rules="[
           (val) =>
-            (val && val.length == 11) ||
-            'Please enter an 11-bit exponent number',
+            (val == null || val.length == 11) ||
+            'Please enter an 11-bit binary number',
+            (val) => /^[0-1]{1,}$/.test(val) || 'Enter a valid binary number',
         ]"
+        :readonly="state.translated == true"
         error-message=""
       />
-      <!-- TODO -->
       <h1 class="text-black text-xl lato-regular">Enter mantissa</h1>
       <q-input
         outlined
         v-model="state.mantissa"
-        :dense="dense"
         :maxlength="52"
         lazy-rules
         :rules="[
           (val) =>
-            (val && val.length == 52) || 'Please enter a 52-bit mantissa',
+            (val.length == 52) || 'Please enter a 52-bit binary number',
+            (val) => /^[0-1]{1,}$/.test(val) || 'Enter a valid binary number',
         ]"
+        :readonly="state.translated == true"
         error-message=""
       />
-      <!-- TODO -->
-      <div id="" class="">
+    </div>
+    <div style="height: 12.5%" v-if="state.selected === 'bin'">
         <div class="q-gutter-sm">
           <q-checkbox
             v-model="state.select_fixed"
             label="Show fixed point"
             color="blue"
+            :disable="state.translated == true"
           />
           <q-checkbox
             v-model="state.select_floating"
             label="Show floating point"
             color="blue"
+            :disable="state.translated == true"
           />
         </div>
         <q-btn
+          v-if="state.translated == false"
           color="blue"
           label="Translate!"
-          style="width: 94.5%"
-          class="absolute bottom-4"
+          style="width: 100%"
+          :disable="!valid_bin || !(state.select_fixed || state.select_floating)"
           @click="translateBin"
         />
+        <q-btn
+          v-if="state.translated == true"
+          color="blue"
+          label="New Translation"
+          style="width: 100%"
+          @click="resetInput"
+        />
         <!-- TODO -->
-      </div>
-    </div>
+      </div>      
+    </form>
   </div>
   <div id="result-container" class="result-container relative m-auto my-4">
     <div id="result" class="px-4 pt-4">
       <h1 class="lato-semibold text-lg">Result:</h1>
       <hr class="border-1 border-black" />
     </div>
-    <div class="px-4 py-2">
+    <div class="px-4 py-2" v-if="state.translated == true">
       <h1 class="lato-regular text-lg">Sign Bit: {{ state.result_signbit }}</h1>
       <h1 class="lato-regular text-lg">
         Exponent: {{ state.result_exponent }}
@@ -171,30 +198,51 @@
 </template>
 
 <script>
-import { reactive } from 'vue';
+import { reactive, computed } from 'vue';
 
 export default {
   name: 'Translator',
   setup() {
     const state = reactive({
       selected: 'hex',
-      hex_input: '',
-      signbit: '',
-      exponent: '',
-      mantissa: '',
+      translated: false,
+      hex_input: null,
+      signbit: null,
+      exponent: null,
+      mantissa: null,
       select_fixed: false,
       select_floating: false,
-      fixed_point: '',
-      floating_point: '',
-      result_signbit: '',
-      result_exponent: '',
-      result_mantissa: '',
+      fixed_point: null,
+      floating_point: null,
+      result_signbit: null,
+      result_exponent: null,
+      result_mantissa: null,
     });
+
+    const valid_bin = computed(() => isBin(state.signbit + state.exponent + state.mantissa))
+    const valid_hex = computed(() => isHex(state.hex_input))
+
+    function resetInput() {
+      state.selected = 'hex';
+      state.hex_input = null;
+      state.signbit = null;
+      state.exponent = null;
+      state.mantissa = null;
+      state.fixed_point = null;
+      state.floating_point = null;
+      state.result_signbit = null;
+      state.result_exponent = null;
+      state.result_mantissa = null;
+      state.select_fixed = false;
+      state.select_floating = false;
+      state.translated = false;
+    }
 
     function translateHex() {
       if (isHex(state.hex_input)) {
         const hex = state.hex_input;
         const bin = hexToBin(hex);
+        console.log(bin);
         const [signBit, expo, mantissa] = splitBinary(bin);
 
         const [isSpecial, code] = isSpecialCase(signBit, expo, mantissa);
@@ -206,6 +254,7 @@ export default {
         state.result_mantissa = mantissa;
         state.fixed_point = result;
         state.floating_point = resultFp;
+        state.translated = true;
       }
     }
 
@@ -222,6 +271,7 @@ export default {
         state.result_mantissa = mantissa;
         state.fixed_point = result;
         state.floating_point = resultFp;
+        state.translated = true;
       }
     }
 
@@ -481,7 +531,60 @@ export default {
     }
 
     function hexToBin(hex) {
-      return parseInt(hex, 16).toString(2).padStart(64, 0);
+      let bin = '';
+      for (let nibble of hex) {
+        switch (nibble) {
+          case '0':
+            bin += '0000';
+            break;
+          case '1':
+            bin += '0001';
+            break;
+          case '2':
+            bin += '0010';
+            break;
+          case '3':
+            bin += '0011';
+            break;
+          case '4':
+            bin += '0100';
+            break;
+          case '5':
+            bin += '0101';
+            break;
+          case '6':
+            bin += '0110';
+            break;
+          case '7':
+            bin += '0111';
+            break;
+          case '8':
+            bin += '1000';
+            break;
+          case '9':
+            bin += '1001';
+            break;
+          case 'A':
+            bin += '1010';
+            break;
+          case 'B':
+            bin += '1011';
+            break;
+          case 'C':
+            bin += '1100';
+            break;
+          case 'D':
+            bin += '1101';
+            break;
+          case 'E':
+            bin += '1110';
+            break;
+          case 'F':
+            bin += '1111';
+            break;
+        }
+      }
+      return bin;
     }
 
     function getResult(isSpecial, code, bin, signBit) {
@@ -517,7 +620,7 @@ export default {
           result *= -1;
         }
         if (result == '-Infinity' || result == 'Infinity') {
-          return result;
+          return [result, result];
         }
 
         let resultFp = decimaltoFloatingPoint(result);
@@ -533,7 +636,7 @@ export default {
       return /^[0-1]{1,}$/.test(bin) && bin.length === 64;
     }
 
-    return { state, isHex, translateHex, translateBin };
+    return { state, isHex, translateHex, translateBin, valid_bin, valid_hex, resetInput };
   },
 };
 </script>
