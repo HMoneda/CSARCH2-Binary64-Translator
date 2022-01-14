@@ -4,7 +4,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview",
+    "heroku-postbuild" : "yarn && yarn dev"
   },
   "dependencies": {
     "@quasar/extras": "^1.12.3",
