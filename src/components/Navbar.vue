@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-toolbar class="bg-purple text-white shadow-2"
+    <q-toolbar class="bg-blue text-white shadow-2"
       ><q-btn flat label="Binary 64 Translator" :to="{ name: 'Home' }"
     /></q-toolbar>
   </div>
