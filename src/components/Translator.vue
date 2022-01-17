@@ -37,7 +37,7 @@
                 'Please enter a 16-digit hexadecimal number',
               (val) =>
                 val == null ||
-                /^[0-9A-Fa-f]+$/.test(val) ||
+                /^[0-9A-F]+$/.test(val) ||
                 'Please enter a valid hexadecimal number',
             ]"
             :disable="state.translated == true"
@@ -195,7 +195,6 @@
         label="Download Result"
         style="width: 94.5%"
         class="absolute bottom-4"
-        @click="downloadResult"
       />
       <!-- TODO -->
     </div>
@@ -204,7 +203,6 @@
 
 <script>
 import { reactive, computed } from 'vue';
-import { saveAs } from 'file-saver';
 
 export default {
   name: 'Translator',
@@ -236,25 +234,6 @@ export default {
       isBin(state.signbit + state.exponent + state.mantissa)
     );
     const valid_hex = computed(() => isHex(state.hex_input));
-
-    function downloadResult() {
-      var result = '';
-
-      result =  "Sign bit: " + state.result_signbit + "\r\n" + 
-                "Exponent: " + state.result_exponent + "\r\n" + 
-                "Mantissa: " + state.result_mantissa + "\r\n\r\n"
-      
-      if (state.select_fixed) {
-        result += "Fixed point decimal: " + state.fixed_point + "\r\n"
-      }
-
-      if (state.select_floating){
-        result += "Floating point decimal: " + state.floating_point
-      }
-
-      var blob = new Blob([result], {type: "text/plain;charset=utf-8"})
-      saveAs(blob, "result.txt")
-    }
 
     function resetInput() {
       state.selected = 'hex';
@@ -667,7 +646,7 @@ export default {
     }
 
     function isHex(hex) {
-      return /^[0-9A-Fa-f]+$/.test(hex) && hex.length === 16;
+      return /^[0-9A-F]+$/.test(hex) && hex.length === 16;
     }
 
     function isBin(bin) {
@@ -682,7 +661,6 @@ export default {
       valid_bin,
       valid_hex,
       resetInput,
-      downloadResult,
     };
   },
 };
