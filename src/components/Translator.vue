@@ -22,7 +22,7 @@
       <form id="hex-form" class="px-4 flex-column justify-center">
         <div class="my-28">
           <h1 class="text-black text-xl lato-regular">
-            Enter hexadecimal number
+            Enter 16-digit hexadecimal number
           </h1>
           <q-input
             outlined
@@ -90,7 +90,7 @@
       class="px-4 flex-column justify-center"
     >
       <div class="my-2">
-        <h1 class="text-black text-xl lato-regular">Enter sign bit</h1>
+        <h1 class="text-black text-xl lato-regular">Enter sign bit (0 or 1)</h1>
         <q-input
           outlined
           v-model="state.signbit"
@@ -102,7 +102,7 @@
           :readonly="state.translated == true"
           error-message=""
         />
-        <h1 class="text-black text-xl lato-regular">Enter exponent</h1>
+        <h1 class="text-black text-xl lato-regular">Enter exponent (11-bits)</h1>
         <q-input
           outlined
           v-model="state.exponent"
@@ -118,7 +118,7 @@
           :readonly="state.translated == true"
           error-message=""
         />
-        <h1 class="text-black text-xl lato-regular">Enter mantissa</h1>
+        <h1 class="text-black text-xl lato-regular">Enter mantissa (52-bits)</h1>
         <q-input
           outlined
           v-model="state.mantissa"
@@ -639,8 +639,11 @@ export default {
           result = '-0';
         } else if (code === 'denorm') {
           let fpBin = convToFloatingPoint(splitBinary(bin));
+          console.log("fpbin: " + fpBin);
           let normalized = normalizeToFixedPoint(fpBin);
+          console.log("normalized: " + normalized);
           result = binaryFractiontoDecimal(normalized);
+          console.log("result: " + result)
           if (parseInt(signBit)) {
             result *= -1;
           }
