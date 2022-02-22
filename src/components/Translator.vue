@@ -275,7 +275,7 @@ export default {
 
     function translateHex() {
       if (isHex(state.hex_input)) {
-        const hex = state.hex_input;
+        const hex = state.hex_input.toUpperCase();
         const bin = hexToBin(hex);
         console.log(bin);
         const [signBit, expo, mantissa] = splitBinary(bin);
@@ -342,8 +342,21 @@ export default {
           frac[m] = bin[2][m];
         }
         const finFrac = frac.join('');
+        let copyFrac = finFrac;
         if (exponentVal < -1022) {
-          return '0' + '.' + finFrac + ' x 2^-1022';
+          let denormExpo = exponentVal
+          for(let i = 0; i < finFrac.length; i++){
+            if (finFrac[i] != 1) {
+              denormExpo--;
+            }
+          }
+          copyFrac = finFrac.slice((denormExpo * -1) - 1023)
+          console.log('copyFrac: ' + copyFrac)
+          if (copyFrac == 1) {
+            return '1.0' + ' x 2^' + denormExpo;
+          } else {
+            return '1.' + copyFrac + ' x 2^' + denormExpo;
+          }
         } else {
           return '1' + '.' + finFrac + ' x 2^' + exponentVal;
         }
@@ -571,6 +584,11 @@ export default {
       return binInt + fracSum;
     }
 
+    function convDenormToFloatingPoint(deci, fpBin) {
+      const denormExpo = parseInt(fpBin.split('^')[1]);
+      return deci * Math.pow(2, denormExpo);
+    }
+
     function hexToBin(hex) {
       let bin = '';
       for (let nibble of hex) {
@@ -640,9 +658,10 @@ export default {
         } else if (code === 'denorm') {
           let fpBin = convToFloatingPoint(splitBinary(bin));
           console.log("fpbin: " + fpBin);
-          let normalized = normalizeToFixedPoint(fpBin);
-          console.log("normalized: " + normalized);
-          result = binaryFractiontoDecimal(normalized);
+          let norm = fpBin.split(' x')[0];
+          let deci = binaryFractiontoDecimal(norm, signBit);
+          console.log('deci: ' + deci);
+          let result = convDenormToFloatingPoint(deci, fpBin);
           console.log("result: " + result)
           if (parseInt(signBit)) {
             result *= -1;
